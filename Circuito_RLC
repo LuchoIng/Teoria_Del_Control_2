@@ -1,0 +1,25 @@
+clear all;close all;
+X= -[0;0]; i=0;
+t_etapa=3.7e-11;
+tF=40e-6;
+u=12;
+tsi=0;
+for n=0:t_etapa:tF  % El tiempo que va aumenatndo progresivamente hasta tiempo de nuestreo h=3.7e-11; al inicio
+    i=i+1;
+    t(i)=tsi;
+    tsi=tsi+t_etapa;
+    if tsi > 5*(1/4.7000e+08); %termina el transitorio rapido
+       t_etapa= 1e-9; %transitorio lento, se puede calcular con este tiempo de muestreo
+    end
+    X=ModeloRLC(t_etapa, X, u);
+    x1(i)=X(1);%IL asignacion en variable de estado (1er componente en x)
+    x2(i)=X(2);%Vc asignacion en variable de estado (2da componente en x)
+    acc(i)=u;
+end
+subplot(3,1,1);hold on;
+plot(t,x1,'r');title('Corriente Inductor I_L');grid;
+subplot(3,1,3);hold on;
+plot(t,acc,'r');title('Tension  Entrada');grid;
+xlabel('Tiempo [Seg.]');
+subplot(3,1,2);hold on;
+plot(t,x2,'r');title('Tension Capacitor');grid;
