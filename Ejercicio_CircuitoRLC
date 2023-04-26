@@ -7,3 +7,4 @@ u= accion;
 xp= A*x+B*u;
 x= x + xp*t_etapa;
 X=x;
+ % Esta seria la funcion que se va a llamar luego en el codigo principal
