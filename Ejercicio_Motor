@@ -1,0 +1,66 @@
+clear all;clc;
+X=-[0; 0; 0];ii=0;t_etapa=1e-7;TitaRef=pi/2;tF=1e-1;
+torque=1.15e-3;
+%Constantes del PID
+Kp=3;Ki=.1;Kd=0;
+Ts=t_etapa;
+A1=((2*Kp*Ts)+(Ki*(Ts^2))+(2*Kd))/(2*Ts);
+B1=(-2*Kp*Ts+Ki*(Ts^2)-4*Kd)/(2*Ts);
+C1=Kd/Ts;
+u=12;
+for t=0:t_etapa:tF
+ii=ii+1;k=ii+2;
+if u>12
+    u=12;
+end
+if u<-12
+    u=-12;
+end
+X=modmotor(t_etapa, X, u, torque);
+e(k)=TitaRef-X(1); %ERROR
+u=u+A1*e(k)+B1*e(k-1)+C1*e(k-2); %PID
+x1(ii)=X(1); %Ia
+x2(ii)=X(2); %Omega
+x3(ii)=X(3); %Tita
+if t>0.3
+    TitaRef=-pi/2;
+    torque=0;
+end
+if t>0.6
+    TitaRef=pi/2;
+    torque=1.15e-3;
+end
+if t>0.9
+    TitaRef=-pi/2;
+    torque=0;
+end
+if t>1.2
+    TitaRef=pi/2;
+    torque=1.15e-3;
+end
+if t>1.5
+    TitaRef=-pi/2;
+    torque=0;
+end
+if t>1.8
+    TitaRef=pi/2;
+    torque=1.15e-3;
+end
+if u>12
+    u=12;
+end
+if u<-12
+    u=-12;
+end
+acc(ii)=u;
+end
+% t=0:t_etapa:tF;
+subplot(4,1,1);hold on;
+plot(t,x1);title('Salida y, Corriente I_a');
+subplot(4,1,2);hold on;
+plot(t,x2);title('Salida y, \omega_t');
+xlabel('Tiempo [Seg.]');
+subplot(4,1,3);hold on;
+plot(t,x3);title('Salida y, \tita_t');
+subplot(4,1,4);hold on;
+plot(t,acc);title('Entrada u_t, v_a');
